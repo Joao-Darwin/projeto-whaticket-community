@@ -419,12 +419,21 @@ const messages = {
           cancel: "Cancelar",
         },
       },
+      informationModal: {
+        buttons: {
+          closed: "Fechar"
+        }
+      },
       messageOptionsMenu: {
         delete: "Deletar",
         reply: "Responder",
+        transcribe: "Transcrever",
         confirmationModal: {
           title: "Apagar mensagem?",
           message: "Esta ação não pode ser revertida.",
+        },
+        informationModal: {
+          title: "Mensagem do Áudio"
         },
       },
       backendErrors: {
