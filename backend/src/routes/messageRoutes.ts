@@ -10,6 +10,7 @@ const messageRoutes = Router();
 const upload = multer(uploadConfig);
 
 messageRoutes.get("/messages/:ticketId", isAuth, MessageController.index);
+messageRoutes.get("/messages/transcribeAudio/:fileName", isAuth, MessageController.transcribeAudioMessage);
 
 messageRoutes.post(
   "/messages/:ticketId",
