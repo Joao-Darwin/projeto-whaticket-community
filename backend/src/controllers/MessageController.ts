@@ -9,6 +9,7 @@ import ShowTicketService from "../services/TicketServices/ShowTicketService";
 import DeleteWhatsAppMessage from "../services/WbotServices/DeleteWhatsAppMessage";
 import SendWhatsAppMedia from "../services/WbotServices/SendWhatsAppMedia";
 import SendWhatsAppMessage from "../services/WbotServices/SendWhatsAppMessage";
+import TranscribeAudioMessageToText from "../services/MessageServices/TranscribeAudioMessageService";
 
 type IndexQuery = {
   pageNumber: string;
@@ -73,3 +74,13 @@ export const remove = async (
 
   return res.send();
 };
+
+export const transcribeAudioMessage = async (req: Request, res: Response): Promise<Response> => {
+
+  const { fileName } = req.params;
+
+  const transcribedText = await TranscribeAudioMessageToText(fileName);
+
+  return res.send(transcribedText);
+
+}
