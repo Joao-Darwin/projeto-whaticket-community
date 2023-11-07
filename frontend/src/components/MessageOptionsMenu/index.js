@@ -8,10 +8,13 @@ import ConfirmationModal from "../ConfirmationModal";
 import { Menu } from "@material-ui/core";
 import { ReplyMessageContext } from "../../context/ReplyingMessage/ReplyingMessageContext";
 import toastError from "../../errors/toastError";
+import InformationModal from "../InformationModal";
 
 const MessageOptionsMenu = ({ message, menuOpen, handleClose, anchorEl }) => {
   const { setReplyingMessage } = useContext(ReplyMessageContext);
   const [confirmationOpen, setConfirmationOpen] = useState(false);
+  const [showTranscribedText, setShowTranscribedText] = useState(false);
+  const [audioMessageTranscribeToText, setAudioMessageTranscribeToText] = useState("");
 
   const handleDeleteMessage = async () => {
     try {
@@ -31,6 +34,22 @@ const MessageOptionsMenu = ({ message, menuOpen, handleClose, anchorEl }) => {
     handleClose();
   };
 
+  const handleTranscriptionAudioToText = async () => {
+
+    try {
+
+      const { data } = await api.get(`/messages/transcribeAudio/${message.body}`);
+
+      setAudioMessageTranscribeToText(data);
+      setShowTranscribedText(true);
+      handleClose();
+
+    } catch (err) {
+      toastError(err);
+    }
+
+  }
+
   return (
     <>
       <ConfirmationModal
@@ -41,6 +60,13 @@ const MessageOptionsMenu = ({ message, menuOpen, handleClose, anchorEl }) => {
       >
         {i18n.t("messageOptionsMenu.confirmationModal.message")}
       </ConfirmationModal>
+      <InformationModal
+        title={i18n.t("messageOptionsMenu.informationModal.title")}
+        open={showTranscribedText}
+        onClose={setShowTranscribedText}
+      >
+        {audioMessageTranscribeToText}
+      </InformationModal>
       <Menu
         anchorEl={anchorEl}
         getContentAnchorEl={null}
@@ -63,6 +89,10 @@ const MessageOptionsMenu = ({ message, menuOpen, handleClose, anchorEl }) => {
         <MenuItem onClick={hanldeReplyMessage}>
           {i18n.t("messageOptionsMenu.reply")}
         </MenuItem>
+        {(message.mediaType === "audio" && !message.fromMe) && (
+          <MenuItem onClick={handleTranscriptionAudioToText}>
+            {i18n.t("messageOptionsMenu.transcribe")}
+          </MenuItem>)}
       </Menu>
     </>
   );
